@@ -58,6 +58,12 @@ Fingerprint: Google Web Server:wappalyzer
 CDN Info: CDN: false, Provider: , Type: 
 ```
 
+## Development Plan
+
+- [x] active mod
+- [ ] passive mod
+- [ ] update workflow
+
 ## Contributing
 
 Contributions are welcome! Feel free to submit bug reports, feature requests, or pull requests.

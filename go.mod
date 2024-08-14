@@ -4,7 +4,7 @@ go 1.22.3
 
 require (
 	github.com/ExploitSuite/cdncheck v0.0.0-20240728165613-04c7b6c3d326
-	github.com/chainreactors/fingers v1.0.0
+	github.com/chainreactors/fingers v1.0.1-0.20240730173434-48ba7446b94b
 	github.com/chainreactors/utils v0.0.0-20240716182459-e85f2b01ee16
 )
 

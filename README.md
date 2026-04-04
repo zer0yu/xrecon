@@ -18,7 +18,7 @@ xrecon is a powerful web fingerprinting tool with CDN detection capabilities. It
 Ensure you have Go 1.18 or higher installed, then run:
 
 ```bash
-go get -u github.com/zer0yu/xrecon
+go install github.com/zer0yu/xrecon/cmd/xrecon@latest
 ```
 
 ## Usage

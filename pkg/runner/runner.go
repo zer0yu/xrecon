@@ -9,6 +9,11 @@ import (
 	"github.com/chainreactors/utils/httputils"
 )
 
+// maxResponseBodySize limits how much of the response body is read for fingerprinting.
+// Large pages (several MB) cause the regex-based detection to consume excessive CPU and memory.
+// 200KB provides sufficient data for accurate fingerprinting while keeping resource usage bounded.
+const maxResponseBodySize = 200 * 1024
+
 type Options struct {
 	URL          string
 	URLFile      string
@@ -71,25 +76,22 @@ func (r *Runner) Run() error {
 	return nil
 }
 
-func (r *Runner) processURL(url string) (string, string, error) {
-	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
-		url = "http://" + url
-	}
+func (r *Runner) processURL(rawURL string) (string, string, error) {
+	host := strings.TrimPrefix(strings.TrimPrefix(rawURL, "http://"), "https://")
 
-	// 检测 CDN
-	isCDN, provider, itemType, err := r.cdnDetector.Detect(strings.TrimPrefix(strings.TrimPrefix(url, "http://"), "https://"))
+	isCDN, provider, itemType, err := r.cdnDetector.Detect(host)
 	cdnInfo := fmt.Sprintf("CDN: %v, Provider: %s, Type: %s", isCDN, provider, itemType)
 	if err != nil {
 		cdnInfo = fmt.Sprintf("CDN detection error: %v", err)
 	}
 
-	resp, err := http.Get(url)
+	resp, err := http.Get(rawURL)
 	if err != nil {
 		return "", cdnInfo, err
 	}
 	defer resp.Body.Close()
 
-	content := httputils.ReadRaw(resp)
+	content := httputils.ReadRawWithSize(resp, maxResponseBodySize)
 	frames, err := r.engine.DetectContent(content)
 	if err != nil {
 		return "", cdnInfo, err
